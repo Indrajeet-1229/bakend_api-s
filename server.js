@@ -2,20 +2,16 @@ const express = require('express');
 const app = express();
 const PORT = 3000;
 
-app.use(express.json()); // Middleware to parse JSON
-
+app.use(express.json()); 
 
 let tasks = [];
 
 let taskId = 1;
-
-
 app.get('/tasks', (req, res) => {
     console.log(tasks)
     res.status(200).json(tasks);
 });
 
-// GET /tasks/:id - Retrieve a task by ID
 app.get('/tasks/:id', (req, res) => {
 
     const taskExist = tasks.find(task => task.id == (req.params.id));
@@ -27,7 +23,7 @@ app.get('/tasks/:id', (req, res) => {
     }
 });
 
-// POST /tasks - Create a new task
+
 app.post('/tasks', (req, res) => {
     const { title, description } = req.body;
 
@@ -45,13 +41,13 @@ app.post('/tasks', (req, res) => {
     res.status(201).json({ newTask, message: "task added Successfull" });
 });
 
-// PUT /tasks/:id - Update an existing task
+
 app.put('/tasks/:id', (req, res) => {
     const { title, description } = req.body;
 
     const taskExist = tasks.find(task => task.id == (req.params.id));
     if (!taskExist) {
-        res.status(404).json({ error: 'Task not found' })
+       return res.status(404).json({ error: 'Task not found' })
     }
 
     if (!title || !description) {
@@ -61,10 +57,10 @@ app.put('/tasks/:id', (req, res) => {
     taskExist.title = title;
     taskExist.description = description;
 
-    res.status(200).json({taskExist, Message:"Task updated successfull"});
+    res.status(200).json({ taskExist, Message: "Task updated successfull" });
 });
 
-// DELETE /tasks/:id - Delete a task
+
 app.delete('/tasks/:id', (req, res) => {
     const index = tasks.findIndex(t => t.id === parseInt(req.params.id));
     if (index === -1) {
@@ -75,7 +71,7 @@ app.delete('/tasks/:id', (req, res) => {
     res.status(200).json({ message: 'Task deleted', task: deleted[0] });
 });
 
-// Handle unexpected errors
+
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ error: 'Something went wrong!' });
